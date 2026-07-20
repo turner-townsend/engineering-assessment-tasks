@@ -1,0 +1,36 @@
+# Node / Nx
+node_modules/
+.nx/
+dist/
+tmp/
+.angular/
+coverage/
+
+# Yarn (Berry) - keep yarn.lock, ignore caches/state
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+.pnp.*
+
+# Logs
+*.log
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+*.egg-info/
+.mypy_cache/
+.ruff_cache/
+
+# Env / local
+.env
+*.local
+local.db
+*.sqlite3
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

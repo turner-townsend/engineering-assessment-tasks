@@ -1,0 +1,30 @@
+# Brings up the API + Postgres. Run the Angular app separately with `yarn nx serve hub`.
+# From the repo root (base-app/):  docker compose -f infra/docker-compose.yml up --build
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: hub
+      POSTGRES_PASSWORD: hub
+      POSTGRES_DB: hub
+    # Host port 5433 avoids clashing with a local Postgres on 5432. API uses the service name `postgres`.
+    ports:
+      - '5433:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U hub']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.api
+    environment:
+      HUB_DATABASE_URL: postgresql+psycopg2://hub:hub@postgres:5432/hub
+      HUB_SEED_ON_STARTUP: 'true'
+    ports:
+      - '8000:8000'
+    depends_on:
+      postgres:
+        condition: service_healthy

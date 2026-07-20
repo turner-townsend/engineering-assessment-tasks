@@ -1,0 +1,788 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Project Controls Hub API",
+    "description": "Base-app API for the Turner & Townsend interview kit. OpenAPI is exported from this app to contracts/openapi.json.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/projects": {
+      "get": {
+        "tags": [
+          "projects"
+        ],
+        "summary": "List Projects",
+        "description": "Return all projects, optionally filtered by region, sector, or status.",
+        "operationId": "listProjects",
+        "parameters": [
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Region"
+            }
+          },
+          {
+            "name": "sector",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Sector"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Project"
+                  },
+                  "title": "Response Listprojects"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project_id}": {
+      "get": {
+        "tags": [
+          "projects"
+        ],
+        "summary": "Get Project",
+        "description": "Return a single project with computed headline KPIs.",
+        "operationId": "getProject",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Project Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/cost-trend": {
+      "get": {
+        "tags": [
+          "projects"
+        ],
+        "summary": "Get Cost Trend",
+        "description": "Return monthly cost time-series for a project, optionally scoped to a work package.",
+        "operationId": "getCostTrend",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Project Id"
+            }
+          },
+          {
+            "name": "workPackageId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Workpackageid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CostSnapshot"
+                  },
+                  "title": "Response Getcosttrend"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/milestones": {
+      "get": {
+        "tags": [
+          "projects"
+        ],
+        "summary": "List Milestones",
+        "description": "Return schedule milestones for a project, ordered by planned date.",
+        "operationId": "listMilestones",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Project Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Milestone"
+                  },
+                  "title": "Response Listmilestones"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/change-orders": {
+      "get": {
+        "tags": [
+          "change-orders"
+        ],
+        "summary": "List Change Orders",
+        "description": "Return change orders for a project, optionally filtered by status.",
+        "operationId": "listChangeOrders",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Project Id"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ChangeOrderStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ChangeOrder"
+                  },
+                  "title": "Response Listchangeorders"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/benchmarks": {
+      "get": {
+        "tags": [
+          "benchmarks"
+        ],
+        "summary": "Get Project Benchmarks",
+        "description": "Return benchmark comparisons for a project.",
+        "operationId": "getProjectBenchmarks",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Project Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BenchmarkComparison"
+                  },
+                  "title": "Response Getprojectbenchmarks"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BenchmarkComparison": {
+        "properties": {
+          "metricKey": {
+            "type": "string",
+            "title": "Metrickey"
+          },
+          "unit": {
+            "type": "string",
+            "title": "Unit"
+          },
+          "projectValue": {
+            "type": "number",
+            "title": "Projectvalue"
+          },
+          "peerMedian": {
+            "type": "number",
+            "title": "Peermedian"
+          },
+          "peerP25": {
+            "type": "number",
+            "title": "Peerp25"
+          },
+          "peerP75": {
+            "type": "number",
+            "title": "Peerp75"
+          },
+          "position": {
+            "$ref": "#/components/schemas/BenchmarkPosition"
+          }
+        },
+        "type": "object",
+        "required": [
+          "metricKey",
+          "unit",
+          "projectValue",
+          "peerMedian",
+          "peerP25",
+          "peerP75",
+          "position"
+        ],
+        "title": "BenchmarkComparison",
+        "description": "A project's unit-cost metric compared against sector/region peer distribution."
+      },
+      "BenchmarkPosition": {
+        "type": "string",
+        "enum": [
+          "below_p25",
+          "p25_to_median",
+          "median_to_p75",
+          "above_p75"
+        ],
+        "title": "BenchmarkPosition"
+      },
+      "ChangeOrder": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "workPackageId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Workpackageid"
+          },
+          "workPackageCode": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Workpackagecode"
+          },
+          "reference": {
+            "type": "string",
+            "title": "Reference"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ChangeOrderStatus"
+          },
+          "costDelta": {
+            "type": "number",
+            "title": "Costdelta"
+          },
+          "scheduleDeltaDays": {
+            "type": "integer",
+            "title": "Scheduledeltadays"
+          },
+          "raisedDate": {
+            "type": "string",
+            "format": "date",
+            "title": "Raiseddate"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "reference",
+          "title",
+          "status",
+          "costDelta",
+          "scheduleDeltaDays",
+          "raisedDate"
+        ],
+        "title": "ChangeOrder",
+        "description": "A change order with cost and schedule impact."
+      },
+      "ChangeOrderStatus": {
+        "type": "string",
+        "enum": [
+          "draft",
+          "submitted",
+          "approved",
+          "rejected"
+        ],
+        "title": "ChangeOrderStatus"
+      },
+      "CostSnapshot": {
+        "properties": {
+          "periodMonth": {
+            "type": "string",
+            "format": "date",
+            "title": "Periodmonth"
+          },
+          "workPackageId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Workpackageid"
+          },
+          "baselineCost": {
+            "type": "number",
+            "title": "Baselinecost"
+          },
+          "forecastCost": {
+            "type": "number",
+            "title": "Forecastcost"
+          },
+          "actualCost": {
+            "type": "number",
+            "title": "Actualcost"
+          }
+        },
+        "type": "object",
+        "required": [
+          "periodMonth",
+          "baselineCost",
+          "forecastCost",
+          "actualCost"
+        ],
+        "title": "CostSnapshot",
+        "description": "A single month's baseline, forecast, and actual cost figures."
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Milestone": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "plannedDate": {
+            "type": "string",
+            "format": "date",
+            "title": "Planneddate"
+          },
+          "forecastDate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Forecastdate"
+          },
+          "actualDate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actualdate"
+          },
+          "ragStatus": {
+            "$ref": "#/components/schemas/RagStatus"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "plannedDate",
+          "ragStatus"
+        ],
+        "title": "Milestone",
+        "description": "A schedule milestone with dates and RAG status."
+      },
+      "Project": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "region": {
+            "type": "string",
+            "title": "Region"
+          },
+          "sector": {
+            "type": "string",
+            "title": "Sector"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ProjectStatus"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date",
+            "title": "Startdate"
+          },
+          "plannedEndDate": {
+            "type": "string",
+            "format": "date",
+            "title": "Plannedenddate"
+          },
+          "baselineCost": {
+            "type": "number",
+            "title": "Baselinecost"
+          },
+          "currency": {
+            "type": "string",
+            "title": "Currency"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "region",
+          "sector",
+          "status",
+          "startDate",
+          "plannedEndDate",
+          "baselineCost",
+          "currency"
+        ],
+        "title": "Project",
+        "description": "Summary representation of a portfolio project."
+      },
+      "ProjectDetail": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "region": {
+            "type": "string",
+            "title": "Region"
+          },
+          "sector": {
+            "type": "string",
+            "title": "Sector"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ProjectStatus"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date",
+            "title": "Startdate"
+          },
+          "plannedEndDate": {
+            "type": "string",
+            "format": "date",
+            "title": "Plannedenddate"
+          },
+          "baselineCost": {
+            "type": "number",
+            "title": "Baselinecost"
+          },
+          "currency": {
+            "type": "string",
+            "title": "Currency"
+          },
+          "actualCostToDate": {
+            "type": "number",
+            "title": "Actualcosttodate"
+          },
+          "costVariance": {
+            "type": "number",
+            "title": "Costvariance"
+          },
+          "scheduleSlippageDays": {
+            "type": "integer",
+            "title": "Scheduleslippagedays"
+          },
+          "openChangeOrderCount": {
+            "type": "integer",
+            "title": "Openchangeordercount"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "region",
+          "sector",
+          "status",
+          "startDate",
+          "plannedEndDate",
+          "baselineCost",
+          "currency",
+          "actualCostToDate",
+          "costVariance",
+          "scheduleSlippageDays",
+          "openChangeOrderCount"
+        ],
+        "title": "ProjectDetail",
+        "description": "Extended project view with computed cost and schedule KPIs."
+      },
+      "ProjectStatus": {
+        "type": "string",
+        "enum": [
+          "planning",
+          "in_delivery",
+          "on_hold",
+          "complete"
+        ],
+        "title": "ProjectStatus"
+      },
+      "RagStatus": {
+        "type": "string",
+        "enum": [
+          "red",
+          "amber",
+          "green"
+        ],
+        "title": "RagStatus"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

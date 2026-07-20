@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.base.json",
+  "files": [],
+  "references": [
+    { "path": "./apps/hub" },
+    { "path": "./libs/api-client" },
+    { "path": "./libs/domain" }
+  ]
+}

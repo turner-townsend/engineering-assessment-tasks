@@ -1,0 +1,23 @@
+{
+  "name": "hub-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/hub-e2e/src",
+  "implicitDependencies": ["hub"],
+  "targets": {
+    "e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cypress run",
+        "cwd": "apps/hub-e2e"
+      }
+    },
+    "open": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cypress open",
+        "cwd": "apps/hub-e2e"
+      }
+    }
+  }
+}
