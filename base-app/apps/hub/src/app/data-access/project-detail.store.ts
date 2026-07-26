@@ -13,6 +13,7 @@ import type {
   CostSnapshot,
   Milestone,
   ProjectDetail,
+  ChangeOrder
 } from '@pch/domain';
 
 type Status = 'idle' | 'loading' | 'loaded' | 'error';
@@ -20,6 +21,8 @@ type Status = 'idle' | 'loading' | 'loaded' | 'error';
 interface ProjectDetailState {
   project: ProjectDetail | null;
   costTrend: CostSnapshot[];
+  costDelta: ChangeOrder[];
+  showOnlyApproved: boolean;
   milestones: Milestone[];
   benchmarks: BenchmarkComparison[];
   status: Status;
@@ -31,9 +34,25 @@ const initialState: ProjectDetailState = {
   costTrend: [],
   milestones: [],
   benchmarks: [],
+  costDelta: [],
+  showOnlyApproved: false, 
   status: 'idle',
   error: null,
 };
+
+export function isApproved(order: ChangeOrder): boolean {
+  return order.status === 'approved';
+}
+
+export function getVisibleChangeOrders(
+  orders: ChangeOrder[],
+  showOnlyApproved: boolean
+): ChangeOrder[] {
+  if (showOnlyApproved) {
+    return orders.filter(isApproved);
+  }
+  return orders;
+}
 
 export const ProjectDetailStore = signalStore(
   { providedIn: 'root' },
@@ -41,6 +60,9 @@ export const ProjectDetailStore = signalStore(
   withComputed((store) => ({
     isLoading: computed(() => store.status() === 'loading'),
     hasError: computed(() => store.status() === 'error'),
+    visibleCostDelta: computed(() =>
+      getVisibleChangeOrders(store.costDelta(), store.showOnlyApproved())
+    ),
   })),
   withMethods((store, api = inject(ApiClient)) => ({
     load(projectId: string): void {
@@ -50,6 +72,7 @@ export const ProjectDetailStore = signalStore(
         costTrend: api.getCostTrend(projectId),
         milestones: api.listMilestones(projectId),
         benchmarks: api.getProjectBenchmarks(projectId),
+        costDelta: api.listChangeOrders(projectId),
       }).subscribe({
         next: (result) => patchState(store, { ...result, status: 'loaded' }),
         error: (err) =>
@@ -59,5 +82,9 @@ export const ProjectDetailStore = signalStore(
           }),
       });
     },
+    
+    setCostDeltaFilter(showOnlyApproved: boolean): void {
+      patchState(store, { showOnlyApproved });
+    },  
   }))
 );

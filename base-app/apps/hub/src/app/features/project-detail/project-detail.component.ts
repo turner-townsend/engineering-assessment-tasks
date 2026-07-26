@@ -11,9 +11,11 @@ import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTableModule } from '@angular/material/table';
 import { ProjectDetailStore } from '../../data-access/project-detail.store';
 import { CostTrendChartComponent } from '../../ui/cost-trend-chart.component';
+import { CostDeltaChartComponent } from '../../ui/cost-delta-chart.component';
 
 @Component({
   selector: 'app-project-detail',
@@ -26,8 +28,10 @@ import { CostTrendChartComponent } from '../../ui/cost-trend-chart.component';
     MatProgressSpinnerModule,
     MatIconModule,
     MatButtonModule,
+    MatButtonToggleModule,
     MatTableModule,
     CostTrendChartComponent,
+    CostDeltaChartComponent,
   ],
   template: `
     <a routerLink="/" mat-button class="mb-3">
@@ -86,6 +90,20 @@ import { CostTrendChartComponent } from '../../ui/cost-trend-chart.component';
       <section class="mb-6">
         <mat-card class="p-4">
           <app-cost-trend-chart [snapshots]="store.costTrend()" />
+        </mat-card>
+      </section>
+
+      <section class="mb-6">
+        <mat-card class="p-4">
+          <mat-button-toggle-group
+            class="mb-3 self-end"
+            [value]="store.showOnlyApproved() ? 'approved' : 'all'"
+            (change)="store.setCostDeltaFilter($event.value === 'approved')"
+          >
+            <mat-button-toggle value="all">All</mat-button-toggle>
+            <mat-button-toggle value="approved">Approved</mat-button-toggle>
+          </mat-button-toggle-group>
+          <app-cost-delta-chart [points]="store.visibleCostDelta()" />
         </mat-card>
       </section>
 
