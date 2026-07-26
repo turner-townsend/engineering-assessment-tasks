@@ -103,7 +103,7 @@ import { CostDeltaChartComponent } from '../../ui/cost-delta-chart.component';
             <mat-button-toggle value="all">All</mat-button-toggle>
             <mat-button-toggle value="approved">Approved</mat-button-toggle>
           </mat-button-toggle-group>
-          <app-cost-delta-chart [points]="store.visibleCostDelta()" />
+          <app-cost-delta-chart [points]="store.cumulativeCostDelta()" />
         </mat-card>
       </section>
 

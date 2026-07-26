@@ -29,6 +29,11 @@ interface ProjectDetailState {
   error: string | null;
 }
 
+export interface MonthlyTotal {
+  month: string;
+  cumulativeDelta: number;
+}
+
 const initialState: ProjectDetailState = {
   project: null,
   costTrend: [],
@@ -54,6 +59,32 @@ export function getVisibleChangeOrders(
   return orders;
 }
 
+export function getCumulativeByMonth(orders: ChangeOrder[]): MonthlyTotal[] {
+  const monthlyTotals: { [month: string]: number } = {};
+  const months: string[] = [];
+
+  for (const order of orders) {
+    const month = order.raisedDate.slice(0, 7);
+
+    if (!months.includes(month)) {
+      months.push(month);
+    }
+    monthlyTotals[month] = (monthlyTotals[month] ?? 0) + order.costDelta;
+  }
+
+  months.sort();
+
+  const result: MonthlyTotal[] = [];
+  let cumulativeDelta = 0;
+
+  for (const month of months) {
+    cumulativeDelta = cumulativeDelta + (monthlyTotals[month] ?? 0);
+    result.push({ month, cumulativeDelta });
+  }
+
+  return result;
+}
+
 export const ProjectDetailStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
@@ -62,6 +93,11 @@ export const ProjectDetailStore = signalStore(
     hasError: computed(() => store.status() === 'error'),
     visibleCostDelta: computed(() =>
       getVisibleChangeOrders(store.costDelta(), store.showOnlyApproved())
+    ),
+  })),
+  withComputed((store) => ({
+    cumulativeCostDelta: computed(() =>
+      getCumulativeByMonth(store.visibleCostDelta())
     ),
   })),
   withMethods((store, api = inject(ApiClient)) => ({
@@ -82,7 +118,7 @@ export const ProjectDetailStore = signalStore(
           }),
       });
     },
-    
+
     setCostDeltaFilter(showOnlyApproved: boolean): void {
       patchState(store, { showOnlyApproved });
     },  
