@@ -51,6 +51,27 @@ export const ProjectChangeOrderCostStore = signalStore(
       return selected.length === 0;
     }),
   })),
+  withComputed((store) => ({
+    cumulativeCostDeltaSeries: computed(() => {
+      const orders = store.selectedChangeOrders();
+
+      const monthlyTotals = new Map<string, number>();
+      for (const co of orders) {
+        const month = co.raisedDate.slice(0, 7);
+        monthlyTotals.set(
+          month,
+          (monthlyTotals.get(month) ?? 0) + co.costDelta,
+        );
+      }
+
+      const sortedMonths = [...monthlyTotals.keys()].sort();
+      let running = 0;
+      return sortedMonths.map((month) => {
+        running += monthlyTotals.get(month)!;
+        return { month, cumulative: running };
+      });
+    }),
+  })),
   withMethods((store, api = inject(ApiClient)) => ({
     load(projectId: string): void {
       patchState(store, { status: 'loading', error: null });

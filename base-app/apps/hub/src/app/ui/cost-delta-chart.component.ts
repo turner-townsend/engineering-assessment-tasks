@@ -6,7 +6,11 @@ import {
 } from '@angular/core';
 import type * as Highcharts from 'highcharts';
 import { HighchartsChartComponent } from 'highcharts-angular';
-import type { ChangeOrder } from '@pch/domain';
+
+export interface CumulativeCostDeltaPoint {
+  month: string;
+  cumulative: number;
+}
 
 @Component({
   selector: 'app-cost-delta-chart',
@@ -21,22 +25,22 @@ import type { ChangeOrder } from '@pch/domain';
   `,
 })
 export class CostDeltaChartComponent {
-  readonly changeOrders = input.required<ChangeOrder[]>();
+  readonly series = input.required<CumulativeCostDeltaPoint[]>();
 
   protected readonly options = computed<Highcharts.Options>(() => {
-    const data = this.changeOrders();
-    const categories = data.map((co) => co.raisedDate);
+    const data = this.series();
+    const categories = data.map((p) => p.month);
     return {
       chart: { type: 'line' },
-      title: { text: 'Change-order cost delta' },
+      title: { text: 'Cumulative cost delta by month' },
       xAxis: { categories },
-      yAxis: { title: { text: 'Cost delta' } },
+      yAxis: { title: { text: 'Cumulative cost delta by month' } },
       credits: { enabled: false },
       series: [
         {
           type: 'line',
-          name: 'Cost delta',
-          data: data.map((co) => co.costDelta),
+          name: 'Cumulative cost delta by month',
+          data: data.map((p) => p.cumulative),
         },
       ],
     };

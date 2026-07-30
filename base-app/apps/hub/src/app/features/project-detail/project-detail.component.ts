@@ -98,7 +98,7 @@ import { CostDeltaChartComponent } from '../../ui/cost-delta-chart.component';
       <section class="mb-6">
         <mat-card class="p-4">
           <div class="mb-3 flex items-center justify-between">
-            <h2 class="text-lg font-medium">Change-order cost delta</h2>
+            <h2 class="text-lg font-medium">Cumulative cost delta by month</h2>
             <mat-button-toggle-group
               [value]="changeOrderCostStore.filter()"
               (change)="changeOrderCostStore.setFilter($event.value)"
@@ -124,7 +124,7 @@ import { CostDeltaChartComponent } from '../../ui/cost-delta-chart.component';
             </div>
           } @else {
             <app-cost-delta-chart
-              [changeOrders]="changeOrderCostStore.selectedChangeOrders()"
+              [series]="changeOrderCostStore.cumulativeCostDeltaSeries()"
             />
           }
         </mat-card>
