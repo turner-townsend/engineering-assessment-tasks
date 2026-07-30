@@ -16,6 +16,8 @@ import { MatTableModule } from '@angular/material/table';
 import { ProjectDetailStore } from '../../data-access/project-detail.store';
 import { CostTrendChartComponent } from '../../ui/cost-trend-chart.component';
 import { ProjectChangeOrderCostStore } from '../../data-access/project-change-order-cost.store';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { CostDeltaChartComponent } from '../../ui/cost-delta-chart.component';
 
 @Component({
   selector: 'app-project-detail',
@@ -30,6 +32,8 @@ import { ProjectChangeOrderCostStore } from '../../data-access/project-change-or
     MatButtonModule,
     MatTableModule,
     CostTrendChartComponent,
+    MatButtonToggleModule,
+    CostDeltaChartComponent,
   ],
   template: `
     <a routerLink="/" mat-button class="mb-3">
@@ -88,6 +92,41 @@ import { ProjectChangeOrderCostStore } from '../../data-access/project-change-or
       <section class="mb-6">
         <mat-card class="p-4">
           <app-cost-trend-chart [snapshots]="store.costTrend()" />
+        </mat-card>
+      </section>
+
+      <section class="mb-6">
+        <mat-card class="p-4">
+          <div class="mb-3 flex items-center justify-between">
+            <h2 class="text-lg font-medium">Change-order cost delta</h2>
+            <mat-button-toggle-group
+              [value]="changeOrderCostStore.filter()"
+              (change)="changeOrderCostStore.setFilter($event.value)"
+            >
+              <mat-button-toggle value="all">All</mat-button-toggle>
+              <mat-button-toggle value="approved"
+                >Approved only</mat-button-toggle
+              >
+            </mat-button-toggle-group>
+          </div>
+
+          @if (changeOrderCostStore.isLoading()) {
+            <div class="flex justify-center py-8" data-testid="co-loading">
+              <mat-spinner diameter="36"></mat-spinner>
+            </div>
+          } @else if (changeOrderCostStore.hasError()) {
+            <div class="text-red-700" data-testid="co-error">
+              {{ changeOrderCostStore.error() }}
+            </div>
+          } @else if (changeOrderCostStore.isEmpty()) {
+            <div class="text-gray-500" data-testid="co-empty">
+              No change orders.
+            </div>
+          } @else {
+            <app-cost-delta-chart
+              [changeOrders]="changeOrderCostStore.selectedChangeOrders()"
+            />
+          }
         </mat-card>
       </section>
 

@@ -9,7 +9,7 @@ import { HighchartsChartComponent } from 'highcharts-angular';
 import type { ChangeOrder } from '@pch/domain';
 
 @Component({
-  selector: 'app-cost-trend-chart',
+  selector: 'app-cost-delta-chart',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [HighchartsChartComponent],
@@ -20,7 +20,7 @@ import type { ChangeOrder } from '@pch/domain';
     ></highcharts-chart>
   `,
 })
-export class CostTrendChartComponent {
+export class CostDeltaChartComponent {
   readonly changeOrders = input.required<ChangeOrder[]>();
 
   protected readonly options = computed<Highcharts.Options>(() => {
