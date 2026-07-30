@@ -4,6 +4,7 @@ import {
   inject,
   input,
   OnInit,
+  effect,
 } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -14,6 +15,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { ProjectDetailStore } from '../../data-access/project-detail.store';
 import { CostTrendChartComponent } from '../../ui/cost-trend-chart.component';
+import { ProjectChangeOrderCostStore } from '../../data-access/project-change-order-cost.store';
 
 @Component({
   selector: 'app-project-detail',
@@ -129,7 +131,9 @@ import { CostTrendChartComponent } from '../../ui/cost-trend-chart.component';
                 <span>Project: {{ b.projectValue | number: '1.0-2' }}</span>
                 <span>Peer median: {{ b.peerMedian | number: '1.0-2' }}</span>
               </div>
-              <div class="text-xs text-gray-500">Position: {{ b.position }}</div>
+              <div class="text-xs text-gray-500">
+                Position: {{ b.position }}
+              </div>
             </div>
           }
         </mat-card>
@@ -140,9 +144,21 @@ import { CostTrendChartComponent } from '../../ui/cost-trend-chart.component';
 export class ProjectDetailComponent implements OnInit {
   readonly projectId = input.required<string>();
   protected readonly store = inject(ProjectDetailStore);
+  protected readonly changeOrderCostStore = inject(ProjectChangeOrderCostStore);
   protected readonly milestoneCols = ['name', 'planned', 'rag'];
 
   ngOnInit(): void {
     this.store.load(this.projectId());
+    this.changeOrderCostStore.load(this.projectId());
+  }
+
+  constructor() {
+    effect(() => {
+      console.log('[CO] all:', this.changeOrderCostStore.allChangeOrders());
+      console.log(
+        '[CO] approved:',
+        this.changeOrderCostStore.approvedChangeOrders(),
+      );
+    });
   }
 }

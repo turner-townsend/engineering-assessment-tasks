@@ -31,9 +31,25 @@ export const ProjectChangeOrderCostStore = signalStore(
   withComputed((store) => ({
     isLoading: computed(() => store.status() === 'loading'),
     hasError: computed(() => store.status() === 'error'),
-    isEmpty: computed(
-      () => store.status() === 'loaded' && store.changeOrders().length === 0,
+    allChangeOrders: computed(() => store.changeOrders()),
+    approvedChangeOrders: computed(() =>
+      store.changeOrders().filter((co) => co.status === 'approved'),
     ),
+  })),
+  withComputed((store) => ({
+    selectedChangeOrders: computed(() =>
+      store.filter() === 'approved'
+        ? store.approvedChangeOrders()
+        : store.allChangeOrders(),
+    ),
+    isEmpty: computed(() => {
+      if (store.status() !== 'loaded') return false;
+      const selected =
+        store.filter() === 'approved'
+          ? store.approvedChangeOrders()
+          : store.allChangeOrders();
+      return selected.length === 0;
+    }),
   })),
   withMethods((store, api = inject(ApiClient)) => ({
     load(projectId: string): void {
@@ -47,6 +63,9 @@ export const ProjectChangeOrderCostStore = signalStore(
             error: err?.message ?? 'Failed to load change orders',
           }),
       });
+    },
+    setFilter(filter: 'all' | 'approved'): void {
+      patchState(store, { filter });
     },
   })),
 );
