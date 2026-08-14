@@ -52,5 +52,5 @@ something is wrong — not a silent failure or a generic error page.
 
 ## Handing it over
 
-Open a PR (or send a zip/patch) with a short `SOLUTION.md`: your design, decisions, trade-offs, and any
+Fork the repo, make your changes, and send us a zip file with a short `SOLUTION.md`: your design, decisions, trade-offs, and any
 AI/tooling you used.
