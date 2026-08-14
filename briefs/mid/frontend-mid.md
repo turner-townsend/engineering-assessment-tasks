@@ -51,5 +51,5 @@ noise (early drafts) from committed costs.
 
 ## Handing it over
 
-Open a PR (or send a zip/patch) with a short `SOLUTION.md`: your design, trade-offs, what you'd
+Fork the repo, make your changes, and send us a zip file with a short `SOLUTION.md`: your design, trade-offs, what you'd
 improve with more time, and any AI/tooling you used.
