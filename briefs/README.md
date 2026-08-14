@@ -8,10 +8,10 @@ Each brief is a **marked take-home task**. It is scored as part of your applicat
 
 ## Index
 
-| Specialization | Brief |
-| --- | --- |
-| Frontend | [frontend-mid.md](mid/frontend-mid.md) |
-| Backend | [backend-mid.md](mid/backend-mid.md) |
+| Specialization          | Brief                                          |
+| ----------------------- | ---------------------------------------------- |
+| Frontend                | [frontend-mid.md](mid/frontend-mid.md)         |
+| Backend                 | [backend-mid.md](mid/backend-mid.md)           |
 | Full-stack (FE-leaning) | [fullstack-fe-mid.md](mid/fullstack-fe-mid.md) |
 | Full-stack (BE-leaning) | [fullstack-be-mid.md](mid/fullstack-be-mid.md) |
 
@@ -27,7 +27,7 @@ Each brief has the same shape:
 
 ## Common rules
 
-- Submit a branch or PR; keep existing features working.
+- Fork the branch and send us a zip; keep existing features working.
 - Use the existing stack; tests proportional to scope.
 - AI and tooling are allowed if disclosed in `SOLUTION.md`.
 - Include a short `SOLUTION.md` (decisions, trade-offs, what you'd do next).
