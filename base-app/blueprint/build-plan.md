@@ -22,7 +22,7 @@ is the take-home brief; item 7 is the write-up that ships with it.
 - [x] 6. **Cumulative change-order cost delta panel** - running total of change-order
   cost deltas by month on the project detail page, with a client-side status filter
   (all vs approved only) and explicit loading, error, and empty states
-- [ ] 7. **SOLUTION.md** - design, trade-offs, what's next, and AI/tooling disclosure
+- [x] 7. **SOLUTION.md** - design, trade-offs, what's next, and AI/tooling disclosure
 
 > TODO (confirm): item 6 is one feature-sized outcome but has two distinct halves
 > (the store's derived signals, then the chart panel). Expect `/feature` to split
