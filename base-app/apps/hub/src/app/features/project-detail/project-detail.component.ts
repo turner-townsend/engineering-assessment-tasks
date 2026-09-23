@@ -14,6 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { ProjectDetailStore } from '../../data-access/project-detail.store';
 import { CostTrendChartComponent } from '../../ui/cost-trend-chart.component';
+import { ChangeOrderDeltaPanelComponent } from './change-order-delta-panel.component';
 
 @Component({
   selector: 'app-project-detail',
@@ -28,6 +29,7 @@ import { CostTrendChartComponent } from '../../ui/cost-trend-chart.component';
     MatButtonModule,
     MatTableModule,
     CostTrendChartComponent,
+    ChangeOrderDeltaPanelComponent,
   ],
   template: `
     <a routerLink="/" mat-button class="mb-3">
@@ -87,6 +89,10 @@ import { CostTrendChartComponent } from '../../ui/cost-trend-chart.component';
         <mat-card class="p-4">
           <app-cost-trend-chart [snapshots]="store.costTrend()" />
         </mat-card>
+      </section>
+
+      <section class="mb-6">
+        <app-change-order-delta-panel [projectId]="projectId()" />
       </section>
 
       <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
