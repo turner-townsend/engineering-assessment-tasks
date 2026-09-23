@@ -45,7 +45,7 @@
     "@types/node": "22.10.0",
     "cypress": "15.16.0",
     "jsdom": "25.0.1",
-    "nx": "22.7.5",
+    "nx": "22.7.7",
     "openapi-typescript": "7.4.3",
     "postcss": "8.4.49",
     "tailwindcss": "4.3.0",
